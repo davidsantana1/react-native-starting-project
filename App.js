@@ -3,24 +3,37 @@ import {
   ImageBackground,
   SafeAreaView,
   StatusBar,
-} from 'react-native'
-import StartGameScreen from './screens/StartGameScreen'
-import { LinearGradient } from 'expo-linear-gradient'
-import { useState } from 'react'
-import GameScreen from './screens/GameScreen'
-import Colors from './constants/colors'
+} from "react-native";
+import StartGameScreen from "./screens/StartGameScreen";
+import { LinearGradient } from "expo-linear-gradient";
+import { useState } from "react";
+import GameScreen from "./screens/GameScreen";
+import Colors from "./constants/colors";
+import GameOverScreen from "./screens/GameOverScreen";
 
 export default function App() {
-  const [userNumber, setUserNumber] = useState()
+  const [userNumber, setUserNumber] = useState();
+  const [gameIsOver, setGameIsOver] = useState(true);
 
   function pickedNumberHandler(pickedNumber) {
-    setUserNumber(pickedNumber)
+    setUserNumber(pickedNumber);
+    setGameIsOver(false);
   }
 
-  let screen = <StartGameScreen onPickNumber={pickedNumberHandler} />
+  function gameOverHandler() {
+    setGameIsOver(true);
+  }
+
+  let screen = <StartGameScreen onPickNumber={pickedNumberHandler} />;
 
   if (userNumber) {
-    screen = <GameScreen userNumber={userNumber} />
+    screen = (
+      <GameScreen userNumber={userNumber} onGameOver={gameOverHandler} />
+    );
+  }
+
+  if (gameIsOver && userNumber) {
+    screen = <GameOverScreen />;
   }
 
   return (
@@ -32,13 +45,13 @@ export default function App() {
         resizeMode="cover"
         style={styles.rootScreen}
         imageStyle={styles.backgroundImage}
-        source={require('./assets/images/background.png')}
+        source={require("./assets/images/background.png")}
       >
         <SafeAreaView style={styles.rootScreen}>{screen}</SafeAreaView>
       </ImageBackground>
       <StatusBar barStyle="light-content" />
     </LinearGradient>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -48,4 +61,4 @@ const styles = StyleSheet.create({
   backgroundImage: {
     opacity: 0.15,
   },
-})
+});
